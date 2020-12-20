@@ -1,3 +1,4 @@
+from google_trans_new import google_translator
 import speech_recognition as sr
 import pyttsx3
 import pywhatkit
@@ -17,15 +18,23 @@ def talk(text):
     engine.runAndWait()
 
 def take_command():
+    command = ''
 
     try:
 
         with sr.Microphone() as source:
+            listener.adjust_for_ambient_noise(source)
             print("listening: ")
             audio = listener.listen(source)
             command = listener.recognize_google(audio)
             command = command.lower()
             print("You said: {}".format(command))
+
+            translator = google_translator()
+            translate_text = translator.translate(command, lang_tgt='bn')
+            print(translate_text)
+            # text = listener.recognize_google(audio, language="bn-BD")
+            # print("Decoded Text : {}".format(text))
             if 'siri' in command:
                 command = command.replace('siri','')
                 talk(command)
@@ -54,7 +63,7 @@ def run_siri():
     elif 'joke' in command:
         talk(pyjokes.get_joke())
     else:
-        print("Couldn't Recognize!!! Can you please roll the ball again")
+        print("That's what you said")
 
 while True:
     run_siri()
